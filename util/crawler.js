@@ -1,11 +1,9 @@
 const request = require('request');
 const cheerio = require('cheerio');
 const url = require('url');
-const account = require('../account.json');
+const {username, password} = require('../account.json');
 
 const loginURL = 'https://www.linkedin.com/';
-const username = account.username;
-const password = account.password;
 
 module.exports = callback => {
 
