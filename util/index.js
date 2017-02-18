@@ -1,4 +1,10 @@
+const toolset = require('./toolset');
+
 module.exports = {
-    crawler: require('./crawler'),
-    fetch: require('./fetch'),
+    redis: require('./redisClient')(),
+    validhelper: require('./validHelper'),
+    customValidators: require('./customValidators'),
+    logger: require('./logger'),
+    hash: toolset.hash,
+    sign: toolset.sign,
 };
