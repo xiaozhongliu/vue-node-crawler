@@ -8,9 +8,8 @@ const loginURL = 'https://www.linkedin.com/';
 module.exports = callback => {
 
     request(loginURL, {
-        // The jar option isn't necessary for simplecrawler integration, but it's
-        // the easiest way to have request remember the session cookie between this
-        // request and the next
+        // The jar option is the easiest way to have request remember the session
+        // cookie between this request and the next
         jar: true
     }, function (error, response, body) {
 
