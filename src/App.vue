@@ -1,14 +1,18 @@
 <template>
     <div class="app">
         <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal">
-            <el-menu-item index="1">查看数据</el-menu-item>
-            <el-submenu index="2">
+            <el-menu-item index="1">
+                <router-link to="/">数据管理</router-link>
+            </el-menu-item>
+            <el-menu-item index="2">
+                <router-link to="/dict">字典管理</router-link>
+            </el-menu-item>
+            <el-submenu index="3">
                 <template slot="title">其他页面</template>
                 <el-menu-item index="2-1">选项1</el-menu-item>
                 <el-menu-item index="2-2">选项2</el-menu-item>
                 <el-menu-item index="2-3">选项3</el-menu-item>
             </el-submenu>
-            <el-menu-item index="3">其他页面</el-menu-item>
         </el-menu>
         <div class="main">
             <transition name="slide-fade">

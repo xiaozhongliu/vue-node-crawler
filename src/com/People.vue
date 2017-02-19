@@ -160,7 +160,7 @@
                 this.debounceSearch()
             }
         },
-        mounted() {
+        beforeMount(){
             this.getPeople(this)
         }
     }

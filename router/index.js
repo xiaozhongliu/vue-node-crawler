@@ -1,7 +1,8 @@
 const router = require('express').Router();
 
 adopt([
-    './people'
+    './people',
+    './dict'
 ]);
 
 function adopt(routes) {

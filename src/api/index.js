@@ -8,16 +8,16 @@ Vue.http.options.credentials = true
 
 export default {
 
-    /**
-     * get paged people
-     * @returns {*}
-     */
     getPeople(criteria) {
         return GET('people', serialize(criteria));
+    },
+
+    getDict(type){
+        return GET('dict/' + type)
     }
 }
 
-function GET(url, queryString) {
+function GET(url, queryString = '') {
     return Vue.http.get(`${config.API_HOST}${url}?clientHost=${location.hostname}${queryString}`)
 }
 

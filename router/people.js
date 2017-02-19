@@ -30,7 +30,8 @@ module.exports = router => {
             offset: (page - 1) * limit,
             limit,
             where,
-            order: ['ename', 'cname']
+            order: ['ename', 'cname'],
+            raw: true
         }).then(function (result) {
             res.json(result)
         })
