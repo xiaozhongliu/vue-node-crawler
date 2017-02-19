@@ -17,19 +17,10 @@ export default {
     },
 
     actions: {
-        getPeople({commit}, {currentPage = 1, pageSize = 20}) {
+        getPeople({commit}, {currentPage = 1, pageSize = config.PAGE_SIZE}) {
             API.getPeople(currentPage, pageSize).then(res => {
-                res.body.rows.forEach(item => {
-                    item.fullName = isEnglishName(item.firstName) || isEnglishName(item.lastName) ?
-                        `${item.firstName} ${item.lastName}` :
-                        `${item.lastName}${item.firstName}`
-                });
                 commit('GET_PEOPLE', res.body)
             })
         }
     }
-}
-
-function isEnglishName(val) {
-    return /^[\w\s]+$/.test(val)
 }

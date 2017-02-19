@@ -59,6 +59,7 @@ app.use(hotMiddleware);
 let staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory);
 app.use(staticPath, express.static('./static'));
 
+app.use(express.static('./src/asset/img'));
 const siteConfig = require('../config')();
 module.exports = app.listen(port, function (err) {
     if (err) {

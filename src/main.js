@@ -5,7 +5,8 @@ import 'element-ui/lib/theme-default/index.css'
 import VueLazyload from 'vue-lazyload'
 import router from './router'
 import store from './store'
-import config from './config'
+import './config'
+import '../db/enum'
 
 Vue.use(ElementUI)
 Vue.use(VueLazyload, {
@@ -14,7 +15,6 @@ Vue.use(VueLazyload, {
     attempt: 1,
     listenEvents: ['scroll']
 })
-window.config = config
 
 /* eslint-disable no-new */
 new Vue({

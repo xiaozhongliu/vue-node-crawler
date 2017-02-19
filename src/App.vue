@@ -10,9 +10,11 @@
             </el-submenu>
             <el-menu-item index="3">其他页面</el-menu-item>
         </el-menu>
-        <transition name="slide-fade">
-            <router-view></router-view>
-        </transition>
+        <div class="main">
+            <transition name="slide-fade">
+                <router-view></router-view>
+            </transition>
+        </div>
     </div>
 </template>
 
@@ -22,7 +24,7 @@
 
 <style lang="scss" rel="stylesheet/scss">
     @import './asset/reset.scss';
-    @import './asset/vars.scss';
+    @import './asset/global.scss';
 
     .app {
         font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
@@ -33,6 +35,10 @@
 
     .el-menu {
         z-index: 100
+    }
+
+    .main {
+        margin: 15px
     }
 
     .slide-fade-enter-active {

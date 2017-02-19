@@ -2,7 +2,7 @@ const {People}=require('../db');
 
 module.exports = router => {
 
-    router.get('/people', (req, res, next) => {
+    router.get('/people', (req, res) => {
 
         let {
             page = 1,
@@ -14,7 +14,7 @@ module.exports = router => {
         People.findAndCountAll({
             limit,
             offset: (page - 1) * limit,
-            order: ['firstName']
+            order: ['ename', 'cname']
         }).then(function (result) {
             res.json(result)
         })

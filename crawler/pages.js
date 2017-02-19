@@ -65,16 +65,62 @@ function process() {
                     publicIdentifier
                 } = arr[j];
 
-                let people = yield People.findOne({where: {publicIdentifier}});
+                let people = yield People.findOne({where: {linkedInID: publicIdentifier}});
                 if (!people) {
+
+                    /**
+                     * process name
+                     */
+                    let cname, ename;
+                    if (isEnglishName(firstName) || isEnglishName(lastName)) {
+                        ename = `${firstName} ${lastName}`
+                    } else {
+                        cname = `${lastName}${firstName}`
+                    }
+
+                    /**
+                     * process title & company
+                     */
+                    let title, company;
+
+                    //1.has /^CEO -/
+                    if (/^CEO -/i.test(occupation)) {
+                        title = 'CEO';
+                        company = occupation.substr(5).trim()
+                    } else if (/^Chief Executive Officer -/i.test(occupation)) {
+                        title = 'CEO';
+                        company = occupation.substr(25).trim()
+                    } else {
+
+                        //2.has ' at '
+                        let index = occupation.indexOf(' at ');
+                        if (index != -1) {
+                            title = occupation.substr(0, index).trim();
+                            company = occupation.substr(index + 4).trim()
+                        } else {
+                            title = occupation
+                        }
+
+                        title = title.replace(/Chief Executive Officer/i, 'CEO');
+                    }
+
+                    /**
+                     * save in db
+                     */
                     yield People.create({
-                        firstName,
-                        lastName,
-                        occupation,
-                        publicIdentifier
+                        source: Enum.Source.LNKD,
+                        linkedInID: publicIdentifier,
+                        cname,
+                        ename,
+                        title,
+                        company
                     })
                 }
             }
         }
     })
+}
+
+function isEnglishName(val) {
+    return /^[\w\s]+$/.test(val)
 }
