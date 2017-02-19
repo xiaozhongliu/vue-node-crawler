@@ -18,13 +18,13 @@ export default {
 
     actions: {
         getPeople({commit}, {
-            currentPage = 1,
-            pageSize = config.PAGE_SIZE,
+            page = 1,
+            limit = config.PAGE_SIZE,
             criteria = {}
         }) {
             API.getPeople(Object.assign({
-                currentPage,
-                pageSize
+                page,
+                limit
             }, criteria)).then(res => {
                 commit('GET_PEOPLE', res.body)
             })

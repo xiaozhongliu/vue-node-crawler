@@ -13,7 +13,6 @@ export default {
      * @returns {*}
      */
     getPeople(criteria) {
-        console.log(serialize(criteria));
         return GET('people', serialize(criteria));
     }
 }

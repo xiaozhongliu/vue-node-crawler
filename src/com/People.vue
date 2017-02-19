@@ -29,9 +29,9 @@
             <el-pagination
                     @size-change="sizeChange"
                     @current-change="currentChange"
-                    :current-page="currentPage"
+                    :current-page="page"
                     :total="people.count"
-                    :page-size="pageSize"
+                    :page-size="limit"
                     :page-sizes="[20, 50, 100, 200]"
                     layout="total, sizes, prev, pager, next, jumper">
             </el-pagination>
@@ -90,9 +90,9 @@
             <el-pagination
                     @size-change="sizeChange"
                     @current-change="currentChange"
-                    :current-page="currentPage"
+                    :current-page="page"
                     :total="people.count"
-                    :page-size="pageSize"
+                    :page-size="limit"
                     :page-sizes="[20, 50, 100, 200]"
                     layout="total, sizes, prev, pager, next, jumper">
             </el-pagination>
@@ -106,8 +106,8 @@
     export default {
         data(){
             return {
-                currentPage: 1,
-                pageSize: config.PAGE_SIZE,
+                page: 1,
+                limit: config.PAGE_SIZE,
                 dialogVisible: false,
                 debounceTimer: null,
                 criteria: {
@@ -134,12 +134,12 @@
                 return `/${sourceName}.png`
             },
             sizeChange(val) {
-                this.pageSize = val;
-                this.currentPage = 1;
+                this.limit = val;
+                this.page = 1;
                 this.getPeople(this)
             },
             currentChange(val) {
-                this.currentPage = val;
+                this.page = val;
                 this.getPeople(this)
             },
             debounceSearch(){
