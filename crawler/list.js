@@ -2,9 +2,11 @@ const co = require('co');
 const fs = require('fs');
 const {People}=require('../db');
 const {crawler, fetch} = require('./util/index');
+const {FacetGeoRegion}=require('./config');
 
-const PAGE_URL = 'http://www.linkedin.com/search/results/people/?facetGeoRegion=%5B%22cn%3A8909%22%5D&keywords=CEO&origin=FACETED_SEARCH&suggestedEntities=%5B%22TITLE%22%5D&title=CEO&page=';
+const location = 'Shanghai';
 const MAX_PAGE = 50;
+const PAGE_URL = `http://www.linkedin.com/search/results/people/?facetGeoRegion=${FacetGeoRegion[location]}&keywords=CEO&origin=FACETED_SEARCH&suggestedEntities=%5B%22TITLE%22%5D&title=CEO&page=`;
 
 fs.existsSync('./data') || fs.mkdirSync('./data');
 
@@ -35,11 +37,11 @@ function fetcher() {
                 index = 1
             }
 
-            setTimeout(heartbeat, 2000);
+            setTimeout(heartbeat, 2000)
         });
     };
 
-    setTimeout(heartbeat, 2000);
+    setTimeout(heartbeat, 2000)
 }
 
 /**
@@ -64,6 +66,9 @@ function process() {
                     occupation,
                     publicIdentifier
                 } = arr[j];
+
+                //如果名字都为空则没有意义
+                if (!firstName && !lastName) continue;
 
                 let people = yield People.findOne({where: {linkedInID: publicIdentifier}});
                 if (!people) {
@@ -108,12 +113,13 @@ function process() {
                      * save in db
                      */
                     yield People.create({
-                        source: Enum.Source.LNKD,
+                        source: Enum.Source.LNKD.value,
                         linkedInID: publicIdentifier,
                         cname,
                         ename,
                         title,
-                        company
+                        company,
+                        location
                     })
                 }
             }

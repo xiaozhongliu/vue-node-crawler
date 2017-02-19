@@ -17,8 +17,8 @@ global.Enum = {
      * 性别
      */
     Gender: {
-        Male: {value: 0, text: ''},
-        Female: {value: 1, text: ''}
+        Male: {value: 1, text: ''},
+        Female: {value: 2, text: ''}
     },
 
     /**

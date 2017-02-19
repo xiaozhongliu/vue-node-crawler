@@ -12,8 +12,9 @@ export default {
      * get paged people
      * @returns {*}
      */
-    getPeople(page, limit) {
-        return GET('people', `&page=${page}&limit=${limit}`);
+    getPeople(criteria) {
+        console.log(serialize(criteria));
+        return GET('people', serialize(criteria));
     }
 }
 
@@ -23,4 +24,14 @@ function GET(url, queryString) {
 
 function REDIRECT(url) {
     location.href = config.API_HOST + url
+}
+
+function serialize(obj) {
+    let arr = [];
+    Object.keys(obj).forEach(key => {
+        if (obj[key]) {
+            arr.push(`${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
+        }
+    });
+    return '&' + arr.join('&')
 }

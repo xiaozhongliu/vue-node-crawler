@@ -1,11 +1,29 @@
 <template>
     <div class="people">
 
-        <div class="search">
-            <el-input placeholder="请输入内容" v-model="keyword" @input="debounceSearch">
-                <el-button slot="append" icon="search" @click="search"></el-button>
-            </el-input>
-        </div>
+        <el-button class="search" type="primary" icon="search" @click="dialogVisible=true">&nbsp;</el-button>
+        <el-dialog custom-class="search-dialog" v-model="dialogVisible">
+            <el-form :model="criteria" label-width="80px">
+                <el-form-item label="Source">
+                    <el-input v-model="criteria.source" @input="debounceSearch"></el-input>
+                </el-form-item>
+                <el-form-item label="CName">
+                    <el-input v-model="criteria.cname" @input="debounceSearch"></el-input>
+                </el-form-item>
+                <el-form-item label="EName">
+                    <el-input v-model="criteria.ename" @input="debounceSearch"></el-input>
+                </el-form-item>
+                <el-form-item label="Title">
+                    <el-input v-model="criteria.title" @input="debounceSearch"></el-input>
+                </el-form-item>
+                <el-form-item label="Company">
+                    <el-input v-model="criteria.company" @input="debounceSearch"></el-input>
+                </el-form-item>
+                <el-form-item label="Location">
+                    <el-input v-model="criteria.location" @input="debounceSearch"></el-input>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
 
         <div class="block">
             <el-pagination
@@ -20,7 +38,7 @@
         </div>
 
         <template>
-            <el-table :data="people.rows" stripe border style="width: 100%">
+            <el-table :data="people.rows" stripe border>
                 <el-table-column label="Avatar" width="100" v-if="false" fixed>
                     <template scope="props">
                         <a :href="'http://www.linkedin.com/in/'+props.row.publicIdentifier">{{props.row.fullName}}</a>
@@ -37,7 +55,7 @@
                         <img :src="getSourceIcon(props.row.source)"/>
                     </template>
                 </el-table-column>
-                <el-table-column prop="location" label="Location" width="60"></el-table-column>
+                <el-table-column prop="location" label="Location" width="90"></el-table-column>
                 <el-table-column prop="industry" label="Industry" width="100"></el-table-column>
                 <el-table-column prop="company" label="Company" width="200"></el-table-column>
                 <el-table-column prop="title" label="Title" min-width="240"></el-table-column>
@@ -84,14 +102,22 @@
 
 <script>
     import {mapActions} from 'vuex'
-    import lodash from 'lodash'
 
     export default {
         data(){
             return {
                 currentPage: 1,
                 pageSize: config.PAGE_SIZE,
-                keyword: ''
+                dialogVisible: false,
+                debounceTimer: null,
+                criteria: {
+                    source: null,
+                    cname: '',
+                    ename: '',
+                    title: '',
+                    company: '',
+                    location: ''
+                }
             }
         },
         computed: {
@@ -116,27 +142,19 @@
                 this.currentPage = val;
                 this.getPeople(this)
             },
-            search,
-            debounceSearch: lodash.debounce(
-                search,
-                500
-            )
+            debounceSearch(){
+                clearTimeout(this.debounceTimer);
+                this.debounceTimer = setTimeout(() => {
+                    this.getPeople(this)
+                }, 500);
+            }
         },
         mounted() {
-            this.getPeople(this.currentPage, config.PAGE_SIZE)
+            this.getPeople(this)
         }
-    }
-
-    function search() {
-        console.log('called');
-        if (!this.keyword) return this.$message({
-            message: '请输入关键字',
-            type: 'warning'
-        });
     }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" rel="stylesheet/scss">
     .people {
         .cname {
@@ -145,6 +163,10 @@
         .ename {
             font-style: italic;
             text-shadow: 0 0 .1px blue
+        }
+
+        .cell {
+            padding: 5px 10px
         }
         .source {
             .cell {
@@ -155,6 +177,47 @@
             .cell {
                 padding: 0;
                 text-align: center
+            }
+        }
+
+        .search {
+            z-index: 100;
+            position: fixed;
+            top: 66px;
+            right: -10px
+        }
+        .search-dialog.el-dialog {
+            position: fixed;
+            top: 105px !important;
+            right: -20px;
+            left: auto;
+            transform: translateX(-10px);
+            padding-right: 20px;
+            width: 350px;
+            border-radius: 10px;
+
+            .el-dialog__header {
+                display: none
+            }
+        }
+        @keyframes dialog-fade-in {
+            0% {
+                transform: translate3d(20px, 0, 0);
+                opacity: 0
+            }
+            100% {
+                transform: translate3d(0, 0, 0);
+                opacity: 1
+            }
+        }
+        @keyframes dialog-fade-out {
+            0% {
+                transform: translate3d(0, 0, 0);
+                opacity: 1
+            }
+            100% {
+                transform: translate3d(20px, 0, 0);
+                opacity: 0
             }
         }
     }
