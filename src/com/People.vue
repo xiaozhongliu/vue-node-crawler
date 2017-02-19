@@ -22,6 +22,9 @@
                 <el-form-item label="Location">
                     <el-input v-model="criteria.location" @input="debounceSearch"></el-input>
                 </el-form-item>
+                <div class="footer">
+                    <el-button type="primary" @click="resetCriteria">重置筛选条件</el-button>
+                </div>
             </el-form>
         </el-dialog>
 
@@ -78,9 +81,9 @@
                 <el-table-column prop="strength" label="Strength" min-width="140"></el-table-column>
                 <el-table-column prop="comment" label="Comment" min-width="140"></el-table-column>
                 <el-table-column prop="notes" label="Notes" min-width="140"></el-table-column>
-                <el-table-column label="操作" width="70" fixed="right">
+                <el-table-column label="操作" width="70" fixed="right" class-name="action">
                     <template scope="props">
-                        <el-button type="text" size="small">编辑</el-button>
+                        <el-button type="primary" size="small" icon="edit"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -103,6 +106,15 @@
 <script>
     import {mapActions} from 'vuex'
 
+    let defaultCriteria = {
+        source: null,
+        cname: '',
+        ename: '',
+        title: '',
+        company: '',
+        location: ''
+    };
+
     export default {
         data(){
             return {
@@ -110,14 +122,7 @@
                 limit: config.PAGE_SIZE,
                 dialogVisible: false,
                 debounceTimer: null,
-                criteria: {
-                    source: null,
-                    cname: '',
-                    ename: '',
-                    title: '',
-                    company: '',
-                    location: ''
-                }
+                criteria: Object.assign({}, defaultCriteria)
             }
         },
         computed: {
@@ -146,7 +151,13 @@
                 clearTimeout(this.debounceTimer);
                 this.debounceTimer = setTimeout(() => {
                     this.getPeople(this)
-                }, 500);
+                }, 500)
+            },
+            resetCriteria(){
+                Object.keys(this.criteria).forEach(key => {
+                    this.criteria[key] = defaultCriteria[key]
+                });
+                this.debounceSearch()
             }
         },
         mounted() {
@@ -170,7 +181,12 @@
         }
         .source {
             .cell {
-                padding: 10px 10px 3px
+                padding: 10px 15px 3px
+            }
+        }
+        .action {
+            .cell {
+                padding-left: 19px
             }
         }
         .is-leaf {
@@ -198,6 +214,10 @@
 
             .el-dialog__header {
                 display: none
+            }
+
+            .footer {
+                text-align: center
             }
         }
         @keyframes dialog-fade-in {

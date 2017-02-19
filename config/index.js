@@ -5,8 +5,8 @@ module.exports = (() => {
     return function () {
         if (!_config) {
             try {
-                _config = require('../config/base');
-                let custom_config = require(`../config/${_config.NODE_ENV}`);
+                _config = require('./base');
+                let custom_config = require(`./${_config.NODE_ENV}`);
                 Object.assign(_config, custom_config);
             } catch (e) {
                 console.log('Please make sure environment variable NODE_ENV is set.');
