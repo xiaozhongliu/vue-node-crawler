@@ -18,8 +18,32 @@ export default {
     },
 
     actions: {
-        getDict({commit}, {type = 'Root'}) {
-            getChildren(commit, type)
+        getDictTree({commit}) {
+            getChildren(commit, 'Root')
+        },
+        createDict({commit}, dict){
+            return new Promise((resolve) => {
+                API.createDict(dict).then(() => {
+                    getChildren(commit, 'Root');
+                    resolve()
+                })
+            })
+        },
+        updateDict({commit}, dict){
+            return new Promise((resolve) => {
+                API.updateDict(dict).then(() => {
+                    getChildren(commit, 'Root');
+                    resolve()
+                })
+            })
+        },
+        deleteDict({commit}, dictId){
+            return new Promise((resolve) => {
+                API.deleteDict(dictId).then(() => {
+                    getChildren(commit, 'Root');
+                    resolve()
+                })
+            })
         }
     }
 }

@@ -14,6 +14,18 @@ export default {
 
     getDict(type){
         return GET('dict/' + type)
+    },
+
+    createDict(dict){
+        return POST('dict', dict)
+    },
+
+    updateDict(dict){
+        return PUT('dict', dict)
+    },
+
+    deleteDict(dictId){
+        return DELETE('dict/' + dictId)
     }
 }
 
@@ -21,8 +33,20 @@ function GET(url, queryString = '') {
     return Vue.http.get(`${config.API_HOST}${url}?clientHost=${location.hostname}${queryString}`)
 }
 
+function POST(url, body) {
+    return Vue.http.post(`${config.API_HOST}${url}?clientHost=${location.hostname}`, body, {})
+}
+
+function PUT(url, body) {
+    return Vue.http.put(`${config.API_HOST}${url}?clientHost=${location.hostname}`, body, {})
+}
+
+function DELETE(url) {
+    return Vue.http.delete(`${config.API_HOST}${url}?clientHost=${location.hostname}`, {}, {})
+}
+
 function REDIRECT(url) {
-    location.href = config.API_HOST + url
+    location.href = `${config.API_HOST}${url}?clientHost=${location.hostname}` + url
 }
 
 function serialize(obj) {
