@@ -81,7 +81,7 @@
 </template>
 
 <script>
-    import {mapGetters, mapActions} from 'vuex'
+    import {mapGetters, mapMutations, mapActions} from 'vuex'
 
     export default {
         data(){
@@ -100,6 +100,9 @@
             'dict'
         ]),
         methods: {
+            ...mapMutations([
+                'ACTIVATE_MENU'
+            ]),
             ...mapActions([
                 'getDictTree',
                 'createDict',
@@ -165,6 +168,7 @@
     }
 
     function delayedRefresh(context) {
+        context.$store.commit('ACTIVATE_MENU', '2');
         setTimeout(() => {
             context.tree.data = context.$store.getters.dict.children;
             if (!context.children) context.children = context.tree.data

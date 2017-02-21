@@ -1,6 +1,6 @@
 <template>
     <div class="app">
-        <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal">
+        <el-menu theme="dark" :default-active="activeMenuIndex" class="el-menu-demo" mode="horizontal">
             <el-menu-item index="1">
                 <router-link to="/">数据管理</router-link>
             </el-menu-item>
@@ -9,9 +9,9 @@
             </el-menu-item>
             <el-submenu index="3">
                 <template slot="title">其他页面</template>
-                <el-menu-item index="2-1">选项1</el-menu-item>
-                <el-menu-item index="2-2">选项2</el-menu-item>
-                <el-menu-item index="2-3">选项3</el-menu-item>
+                <el-menu-item index="3-1">选项1</el-menu-item>
+                <el-menu-item index="3-2">选项2</el-menu-item>
+                <el-menu-item index="3-3">选项3</el-menu-item>
             </el-submenu>
         </el-menu>
         <div class="main">
@@ -23,7 +23,13 @@
 </template>
 
 <script>
-    export default {}
+    import {mapGetters} from 'vuex'
+
+    export default {
+        computed: mapGetters([
+            'activeMenuIndex'
+        ])
+    }
 </script>
 
 <style lang="scss" rel="stylesheet/scss">

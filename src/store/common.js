@@ -1,16 +1,16 @@
 export default {
 
     state: {
-        isMenuShow: false
+        activeMenuIndex: '1'
     },
 
     getters: {
-        isMenuShow: state => state.isMenuShow
+        activeMenuIndex: state => state.activeMenuIndex
     },
 
     mutations: {
-        TOGGLE_MENU (state, isHide) {
-            state.isMenuShow = isHide ? false : !state.isMenuShow
+        ACTIVATE_MENU (state, index) {
+            state.activeMenuIndex = index
         }
     },
 }
