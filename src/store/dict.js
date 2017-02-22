@@ -21,6 +21,13 @@ export default {
         getDictTree({commit}) {
             getChildren(commit, 'Root')
         },
+        getDictTypes(){
+            return new Promise((resolve) => {
+                API.getDictTypes().then(res => {
+                    resolve(res.body)
+                })
+            })
+        },
         createDict({commit}, dict){
             return new Promise((resolve) => {
                 API.createDict(dict).then(() => {
@@ -37,9 +44,9 @@ export default {
                 })
             })
         },
-        deleteDict({commit}, dictId){
+        deleteDict({commit}, dict){
             return new Promise((resolve) => {
-                API.deleteDict(dictId).then(() => {
+                API.deleteDict(dict).then(() => {
                     getChildren(commit, 'Root');
                     resolve()
                 })
@@ -50,8 +57,10 @@ export default {
 
 function getChildren(commit, type) {
     API.getDict(type).then(res => {
-        commit('GET_DICT', res.body.rows);
-        res.body.rows.forEach(item => {
+        commit('GET_DICT', res.body);
+        res.body.forEach(item => {
+            item.keyBeforeUpdate = item.key;
+            item.displayName = `${item.key} ${item.desc}`;
             if (item.hasChild) {
                 getChildren(commit, item.key)
             }

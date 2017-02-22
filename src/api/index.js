@@ -16,6 +16,10 @@ export default {
         return GET('dict/' + type)
     },
 
+    getDictTypes(){
+        return GET('dictTypes');
+    },
+
     createDict(dict){
         return POST('dict', dict)
     },
@@ -24,9 +28,9 @@ export default {
         return PUT('dict', dict)
     },
 
-    deleteDict(dictId){
-        return DELETE('dict/' + dictId)
-    }
+    deleteDict(dict){
+        return DELETE('dict', dict)
+    },
 }
 
 function GET(url, queryString = '') {
@@ -41,8 +45,8 @@ function PUT(url, body) {
     return Vue.http.put(`${config.API_HOST}${url}?clientHost=${location.hostname}`, body, {})
 }
 
-function DELETE(url) {
-    return Vue.http.delete(`${config.API_HOST}${url}?clientHost=${location.hostname}`, {}, {})
+function DELETE(url, body) {
+    return Vue.http.delete(`${config.API_HOST}${url}?clientHost=${location.hostname}`, {body})
 }
 
 function REDIRECT(url) {

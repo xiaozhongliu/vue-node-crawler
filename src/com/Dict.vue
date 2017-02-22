@@ -1,9 +1,10 @@
 <template>
     <div class="dict">
-        <el-tree :data="tree.data" :props="tree.props" node-key="dictId" :default-expanded-keys="[tree.expandedKey]"
+        <el-tree :data="tree.data" node-key="dictId" :default-expanded-keys="[tree.expandedKey]" :props="tree.props"
                  @node-click="nodeClick"></el-tree>
 
-        <el-table :data="children" stripe border>
+        <el-table :data="table.data" row-key="dictId" :expand-row-keys="[table.expandedKey]" @expand="rowExpand" stripe
+                  border>
             <el-table-column type="expand" width="60">
                 <template scope="props">
                     <el-table class="edit-table" :data="[props.row]" :show-header="false" stripe border>
@@ -15,7 +16,13 @@
                         </el-table-column>
                         <el-table-column prop="type" label="Type" width="120">
                             <template scope="props">
-                                <el-input v-model="props.row.type" placeholder="请输入内容"></el-input>
+                                <el-select v-model="props.row.type" placeholder="请选择">
+                                    <el-option
+                                            v-for="item in dictTypes"
+                                            :label="item.key"
+                                            :value="item.key">
+                                    </el-option>
+                                </el-select>
                             </template>
                         </el-table-column>
                         <el-table-column prop="key" label="Key" width="120">
@@ -42,7 +49,10 @@
             <el-table-column prop="desc" label="Desc" min-width="240"></el-table-column>
             <el-table-column label="操作" width="70" fixed="right" class-name="action">
                 <template scope="props">
-                    <el-button type="primary" size="small" icon="delete" @click="deleteIt(props.row)"></el-button>
+                    <el-tooltip class="item" effect="dark" content="仅可删除末尾节点" placement="top-end">
+                        <el-button type="primary" size="small" icon="delete" v-if="!props.row.hasChild"
+                                   @click="deleteIt(props.row)"></el-button>
+                    </el-tooltip>
                 </template>
             </el-table-column>
         </el-table>
@@ -57,7 +67,13 @@
                 </el-table-column>
                 <el-table-column prop="type" label="Type" width="120">
                     <template scope="props">
-                        <el-input v-model="props.row.type" placeholder="请输入内容"></el-input>
+                        <el-select v-model="props.row.type" placeholder="请选择">
+                            <el-option
+                                    v-for="item in dictTypes"
+                                    :label="item.key"
+                                    :value="item.key">
+                            </el-option>
+                        </el-select>
                     </template>
                 </el-table-column>
                 <el-table-column prop="key" label="Key" width="120">
@@ -86,13 +102,18 @@
     export default {
         data(){
             return {
-                children: null,
-                addDict: [{}],
+                dictTypes: [],
                 isAdding: false,
+                addDict: [{type: null}],
                 tree: {
                     data: null,
                     expandedKey: 0,
-                    props: {children: 'children', label: 'desc'}
+                    selectedType: 'Root',
+                    props: {children: 'children', label: 'displayName'}
+                },
+                table: {
+                    data: null,
+                    expandedKey: 0
                 }
             };
         },
@@ -105,35 +126,40 @@
             ]),
             ...mapActions([
                 'getDictTree',
+                'getDictTypes',
                 'createDict',
                 'updateDict',
                 'deleteDict'
             ]),
             nodeClick(data, node, tree){
                 this.tree.expandedKey = data.dictId;
+                this.tree.selectedType = data.type;
                 if (data.hasChild) {
-                    this.children = data.children
+                    this.table.data = data.children
                 }
             },
+            rowExpand(row){
+                this.table.expandedKey = row.dictId;
+                this.isAdding = false
+            },
             showAdd(){
+                this.table.expandedKey = 0;
                 this.isAdding = true
             },
             create(dict){
                 this.createDict(dict).then(() => {
-                    this.$message({
-                        message: '数据创建成功',
-                        type: 'success'
-                    });
+                    this.$message({message: '数据创建成功', type: 'success'});
+                    if (this.table.data[0].type == dict.type) {
+                        this.table.data.push(dict)
+                    }
                     this.isAdding = false;
+                    this.addDict = [{type: null}];
                     delayedRefresh(this)
                 });
             },
             update(dict){
                 this.updateDict(dict).then(() => {
-                    this.$message({
-                        message: '数据更新成功',
-                        type: 'success'
-                    });
+                    this.$message({message: '数据更新成功', type: 'success'});
                     delayedRefresh(this)
                 })
             },
@@ -143,21 +169,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.deleteDict(dict.dictId).then(() => {
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
-                        this.children = this.children.filter(item => {
+                    this.deleteDict(dict).then(() => {
+                        this.$message({message: '删除成功', type: 'success'});
+                        this.table.data = this.table.data.filter(item => {
                             return item.dictId != dict.dictId
                         });
                         delayedRefresh(this)
                     })
                 }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消'
-                    })
+                    this.$message({type: 'info', message: '已取消'})
                 })
             }
         },
@@ -168,23 +188,27 @@
     }
 
     function delayedRefresh(context) {
+        context.table.expandedKey = 0;
         context.$store.commit('ACTIVATE_MENU', '2');
+        context.getDictTypes().then(dictTypes => {
+            context.dictTypes = [{key: 'Root'}, ...dictTypes]
+        });
         setTimeout(() => {
             context.tree.data = context.$store.getters.dict.children;
-            if (!context.children) context.children = context.tree.data
-        }, 200)
+            if (!context.table.data) context.table.data = context.tree.data
+        }, 300)
     }
 </script>
 
 <style lang="scss" rel="stylesheet/scss">
+    .el-table__expanded-cell {
+        padding: 0
+    }
+
     .is-leaf {
         .cell {
             text-align: center
         }
-    }
-
-    .el-table__expanded-cell {
-        padding: 0
     }
 
     .edit-table {
