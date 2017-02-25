@@ -19,13 +19,13 @@
                                 <el-select v-model="props.row.type" placeholder="请选择">
                                     <el-option
                                             v-for="item in dictTypes"
-                                            :label="item.key"
-                                            :value="item.key">
+                                            :label="item.value"
+                                            :value="item.value">
                                     </el-option>
                                 </el-select>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="key" label="Key" width="120">
+                        <el-table-column prop="key" label="Key" width="200">
                             <template scope="props">
                                 <el-input v-model="props.row.key" placeholder="请输入内容"></el-input>
                             </template>
@@ -44,7 +44,7 @@
                 </template>
             </el-table-column>
             <el-table-column prop="type" label="Type" width="120"></el-table-column>
-            <el-table-column prop="key" label="Key" width="120"></el-table-column>
+            <el-table-column prop="key" label="Key" width="200"></el-table-column>
             <el-table-column prop="value" label="Value" width="150"></el-table-column>
             <el-table-column prop="desc" label="Desc" min-width="240"></el-table-column>
             <el-table-column label="操作" width="70" fixed="right" class-name="action">
@@ -67,16 +67,15 @@
                 </el-table-column>
                 <el-table-column prop="type" label="Type" width="120">
                     <template scope="props">
-                        <el-select v-model="props.row.type" placeholder="请选择">
-                            <el-option
-                                    v-for="item in dictTypes"
-                                    :label="item.key"
-                                    :value="item.key">
-                            </el-option>
-                        </el-select>
+                        <el-autocomplete
+                                class="inline-input"
+                                v-model="props.row.type"
+                                :fetch-suggestions="querySearch"
+                                placeholder="请输入">
+                        </el-autocomplete>
                     </template>
                 </el-table-column>
-                <el-table-column prop="key" label="Key" width="120">
+                <el-table-column prop="key" label="Key" width="200">
                     <template scope="props">
                         <el-input v-model="props.row.key" placeholder="请输入内容"></el-input>
                     </template>
@@ -146,6 +145,9 @@
                 this.table.expandedKey = 0;
                 this.isAdding = true
             },
+            querySearch(query, cb){
+                cb(this.dictTypes)
+            },
             create(dict){
                 this.createDict(dict).then(() => {
                     this.$message({message: '数据创建成功', type: 'success'});
@@ -189,9 +191,12 @@
 
     function delayedRefresh(context) {
         context.table.expandedKey = 0;
-        context.$store.commit('ACTIVATE_MENU', '2');
+        context.$store.commit('ACTIVATE_MENU', '3');
         context.getDictTypes().then(dictTypes => {
-            context.dictTypes = [{key: 'Root'}, ...dictTypes]
+            context.dictTypes = [{value: 'Root'}];
+            dictTypes.forEach(type => {
+                context.dictTypes.push({value: type.key})
+            })
         });
         setTimeout(() => {
             context.tree.data = context.$store.getters.dict.children;

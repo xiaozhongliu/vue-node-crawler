@@ -60,7 +60,7 @@ function getChildren(commit, type) {
         commit('GET_DICT', res.body);
         res.body.forEach(item => {
             item.keyBeforeUpdate = item.key;
-            item.displayName = `${item.key} ${item.desc}`;
+            item.displayName = `${item.key} ${item.desc || ''}`;
             if (item.hasChild) {
                 getChildren(commit, item.key)
             }
@@ -77,7 +77,10 @@ function getTarget(dict, type) {
                 return item
             }
             if (item.children) {
-                return getTarget(item, type)
+                let inner = getTarget(item, type);
+                if (inner && inner.key == type) {
+                    return inner
+                }
             }
         }
     }

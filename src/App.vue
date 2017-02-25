@@ -5,13 +5,16 @@
                 <router-link to="/">数据管理</router-link>
             </el-menu-item>
             <el-menu-item index="2">
+                <router-link to="/criteria">条件录入</router-link>
+            </el-menu-item>
+            <el-menu-item index="3">
                 <router-link to="/dict">字典管理</router-link>
             </el-menu-item>
-            <el-submenu index="3">
+            <el-submenu index="4">
                 <template slot="title">其他页面</template>
-                <el-menu-item index="3-1">选项1</el-menu-item>
-                <el-menu-item index="3-2">选项2</el-menu-item>
-                <el-menu-item index="3-3">选项3</el-menu-item>
+                <el-menu-item index="4-1">选项1</el-menu-item>
+                <el-menu-item index="4-2">选项2</el-menu-item>
+                <el-menu-item index="4-3">选项3</el-menu-item>
             </el-submenu>
         </el-menu>
         <div class="main">
