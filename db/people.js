@@ -2,10 +2,11 @@ let db = require('./dbClient');
 let {INTEGER, STRING, BOOLEAN, DATE} = require('sequelize');
 
 let People = db.define('people', {
-    peopleId: {type: INTEGER, primaryKey: true, autoIncrement: true},
+    peopleID: {type: INTEGER, primaryKey: true, autoIncrement: true},
     source: {type: INTEGER, allowNull: false, comment: '数据来源'},
     cname: {type: STRING(50), comment: '中文名'},
     ename: {type: STRING(50), comment: '英文名'},
+    keyword: {type: STRING(20), comment: '关键字'},
     linkedInID: {type: STRING(50), comment: '领英标识'},
     industry: {type: STRING(50), comment: '行业'},
     company: {type: STRING(200), comment: '公司'},

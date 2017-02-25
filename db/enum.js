@@ -5,25 +5,16 @@ if (!global) global = window;
 
 global.Enum = {
 
-    /**
-     * 数据来源
-     */
     Source: {
         LNKD: {value: 1, text: ''},    //领英
         GARYL: {value: 2, text: ''}    //GARY LIU
     },
 
-    /**
-     * 性别
-     */
     Gender: {
         Male: {value: 1, text: ''},
         Female: {value: 2, text: ''}
     },
 
-    /**
-     * 学历
-     */
     Edu: {
         HighSchool: {value: 1, text: ''},      //高中
         JuniorCollege: {value: 2, text: ''},   //大专

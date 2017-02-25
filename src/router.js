@@ -10,6 +10,10 @@ export default new VueRouter({
             component: resolve => require(['./com/People.vue'], resolve)
         },
         {
+            path: '/criteria',
+            component: resolve => require(['./com/Criteria.vue'], resolve)
+        },
+        {
             path: '/dict',
             component: resolve => require(['./com/Dict.vue'], resolve)
         },

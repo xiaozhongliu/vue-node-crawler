@@ -1,6 +1,5 @@
 <template>
-    <div class="people">
-
+    <div class="people-page">
         <el-button class="search" type="primary" icon="search" @click="dialogVisible=true">&nbsp;</el-button>
         <el-dialog custom-class="search-dialog" v-model="dialogVisible">
             <el-form :model="criteria" label-width="80px">
@@ -159,7 +158,7 @@
 </script>
 
 <style lang="scss" rel="stylesheet/scss">
-    .people {
+    .people-page {
         .cname {
             text-shadow: 0 0 .1px yellow
         }

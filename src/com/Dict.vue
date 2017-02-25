@@ -1,7 +1,45 @@
 <template>
-    <div class="dict">
+    <div class="dict-page">
         <el-tree :data="tree.data" node-key="dictId" :default-expanded-keys="[tree.expandedKey]" :props="tree.props"
                  @node-click="nodeClick"></el-tree>
+
+        <transition name="fade" mode="in-out">
+            <div class="add">
+                <el-button class="add-btn" type="primary" size="small" icon="plus" v-if="!isAdding" @click="showAdd"></el-button>
+                <el-table class="edit-table" :data="addDict" :show-header="false" v-else stripe border>
+                    <el-table-column label="操作" width="60" class-name="action">
+                        <template scope="props">
+                            <el-button type="primary" size="small" icon="check" @click="create(props.row)"></el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="type" label="Type" width="120">
+                        <template scope="props">
+                            <el-autocomplete
+                                    class="inline-input"
+                                    v-model="props.row.type"
+                                    :fetch-suggestions="querySearch"
+                                    placeholder="请输入">
+                            </el-autocomplete>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="key" label="Key" width="200">
+                        <template scope="props">
+                            <el-input v-model="props.row.key" placeholder="请输入内容"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="value" label="Value" width="500">
+                        <template scope="props">
+                            <el-input v-model="props.row.value" placeholder="请输入内容"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="desc" label="Desc" min-width="240">
+                        <template scope="props">
+                            <el-input v-model="props.row.desc" placeholder="请输入内容"></el-input>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </transition>
 
         <el-table :data="table.data" row-key="dictId" :expand-row-keys="[table.expandedKey]" @expand="rowExpand" stripe
                   border>
@@ -30,7 +68,7 @@
                                 <el-input v-model="props.row.key" placeholder="请输入内容"></el-input>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="value" label="Value" width="150">
+                        <el-table-column prop="value" label="Value" width="600">
                             <template scope="props">
                                 <el-input v-model="props.row.value" placeholder="请输入内容"></el-input>
                             </template>
@@ -45,7 +83,7 @@
             </el-table-column>
             <el-table-column prop="type" label="Type" width="120"></el-table-column>
             <el-table-column prop="key" label="Key" width="200"></el-table-column>
-            <el-table-column prop="value" label="Value" width="150"></el-table-column>
+            <el-table-column prop="value" label="Value" width="600"></el-table-column>
             <el-table-column prop="desc" label="Desc" min-width="240"></el-table-column>
             <el-table-column label="操作" width="70" fixed="right" class-name="action">
                 <template scope="props">
@@ -56,42 +94,6 @@
                 </template>
             </el-table-column>
         </el-table>
-
-        <div class="add">
-            <el-button class="add-btn" type="primary" size="small" icon="plus" @click="showAdd"></el-button>
-            <el-table class="edit-table" :data="addDict" :show-header="false" v-if="isAdding" stripe border>
-                <el-table-column label="操作" width="60" class-name="action">
-                    <template scope="props">
-                        <el-button type="primary" size="small" icon="check" @click="create(props.row)"></el-button>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="type" label="Type" width="120">
-                    <template scope="props">
-                        <el-autocomplete
-                                class="inline-input"
-                                v-model="props.row.type"
-                                :fetch-suggestions="querySearch"
-                                placeholder="请输入">
-                        </el-autocomplete>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="key" label="Key" width="200">
-                    <template scope="props">
-                        <el-input v-model="props.row.key" placeholder="请输入内容"></el-input>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="value" label="Value" width="150">
-                    <template scope="props">
-                        <el-input v-model="props.row.value" placeholder="请输入内容"></el-input>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="desc" label="Desc" min-width="240">
-                    <template scope="props">
-                        <el-input v-model="props.row.desc" placeholder="请输入内容"></el-input>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </div>
     </div>
 </template>
 
@@ -114,7 +116,7 @@
                     data: null,
                     expandedKey: 0
                 }
-            };
+            }
         },
         computed: mapGetters([
             'dict'
@@ -131,14 +133,14 @@
                 'deleteDict'
             ]),
             nodeClick(data, node, tree){
-                this.tree.expandedKey = data.dictId;
+                this.tree.expandedKey = data.dictID;
                 this.tree.selectedType = data.type;
                 if (data.hasChild) {
                     this.table.data = data.children
                 }
             },
             rowExpand(row){
-                this.table.expandedKey = row.dictId;
+                this.table.expandedKey = row.dictID;
                 this.isAdding = false
             },
             showAdd(){
@@ -157,7 +159,7 @@
                     this.isAdding = false;
                     this.addDict = [{type: null}];
                     delayedRefresh(this)
-                });
+                })
             },
             update(dict){
                 this.updateDict(dict).then(() => {
@@ -174,7 +176,7 @@
                     this.deleteDict(dict).then(() => {
                         this.$message({message: '删除成功', type: 'success'});
                         this.table.data = this.table.data.filter(item => {
-                            return item.dictId != dict.dictId
+                            return item.dictID != dict.dictID
                         });
                         delayedRefresh(this)
                     })
@@ -184,6 +186,7 @@
             }
         },
         beforeMount(){
+            this.$store.commit('ACTIVATE_MENU', '3');
             this.getDictTree();
             delayedRefresh(this)
         }
@@ -191,7 +194,6 @@
 
     function delayedRefresh(context) {
         context.table.expandedKey = 0;
-        context.$store.commit('ACTIVATE_MENU', '3');
         context.getDictTypes().then(dictTypes => {
             context.dictTypes = [{value: 'Root'}];
             dictTypes.forEach(type => {
@@ -199,44 +201,42 @@
             })
         });
         setTimeout(() => {
-            context.tree.data = context.$store.getters.dict.children;
+            context.tree.data = context.dict.children;
             if (!context.table.data) context.table.data = context.tree.data
-        }, 300)
+        }, 500)
     }
 </script>
 
 <style lang="scss" rel="stylesheet/scss">
-    .el-table__expanded-cell {
-        padding: 0
-    }
-
-    .is-leaf {
-        .cell {
-            text-align: center
+    .dict-page {
+        .el-table__expanded-cell {
+            padding: 0
         }
-    }
-
-    .edit-table {
-        .cell {
-            padding: 5px 6px
-        }
-        .action {
+        .is-leaf {
             .cell {
-                padding-left: 12px
+                text-align: center
             }
         }
-        .edit-desc {
+        .edit-table {
             .cell {
-                padding-right: 76px
+                padding: 5px 6px
+            }
+            .action {
+                .cell {
+                    padding-left: 12px
+                }
+            }
+            .edit-desc {
+                .cell {
+                    padding-right: 76px
+                }
             }
         }
-    }
-
-    .add {
-        .add-btn {
-            position: absolute;
-            margin: 10px 13px;
-            width: 35px
+        .add {
+            .add-btn {
+                margin: 10px 13px;
+                width: 35px
+            }
         }
     }
 </style>

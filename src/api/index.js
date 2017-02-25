@@ -12,7 +12,15 @@ export default {
         return GET('people', serialize(criteria));
     },
 
-    getDict(type){
+    getCriteria(criteria){
+        return GET('criteria', serialize(criteria));
+    },
+
+    bulkCreateCriteria(criteria){
+        return POST('criteria', criteria)
+    },
+
+    getDicts(type){
         return GET('dict/' + type)
     },
 
@@ -33,26 +41,31 @@ export default {
     },
 }
 
+/**
+ * request methods encapsulation
+ */
 function GET(url, queryString = '') {
-    return Vue.http.get(`${config.API_HOST}${url}?clientHost=${location.hostname}${queryString}`)
+    return Vue.http.get(`${getCommonUrl(url)}${queryString}`)
 }
-
 function POST(url, body) {
-    return Vue.http.post(`${config.API_HOST}${url}?clientHost=${location.hostname}`, body, {})
+    return Vue.http.post(`${getCommonUrl(url)}`, body, {})
 }
-
 function PUT(url, body) {
-    return Vue.http.put(`${config.API_HOST}${url}?clientHost=${location.hostname}`, body, {})
+    return Vue.http.put(`${getCommonUrl(url)}`, body, {})
 }
-
 function DELETE(url, body) {
-    return Vue.http.delete(`${config.API_HOST}${url}?clientHost=${location.hostname}`, {body})
+    return Vue.http.delete(`${getCommonUrl(url)}`, {body})
 }
-
 function REDIRECT(url) {
-    location.href = `${config.API_HOST}${url}?clientHost=${location.hostname}` + url
+    location.href = `${getCommonUrl(url)}` + url
 }
 
+/**
+ * helpers
+ */
+function getCommonUrl(url) {
+    return `${config.API_HOST}${url}?clientHost=${location.hostname}`
+}
 function serialize(obj) {
     let arr = [];
     Object.keys(obj).forEach(key => {

@@ -3,25 +3,29 @@ const {Dict}=require('../db');
 
 module.exports = router => {
 
-    router.get('/dict/:type', (req, res) => {
-        Dict.findAll({
-            where: {type: req.params.type},
-            order: ['key'],
-            raw: true
-        }).then(result => {
-            res.json(result)
-        })
+    router.get('/dict/:type', (req, res, next) => {
+        co(function*() {
+
+            res.json(yield Dict.findAll({
+                where: {type: req.params.type},
+                order: ['key'],
+                raw: true
+            }))
+
+        }).catch(next);
     });
 
-    router.get('/dictTypes', (req, res) => {
-        Dict.findAll({
-            where: {hasChild: true},
-            attributes: ['key'],
-            order: ['type'],
-            raw: true
-        }).then(result => {
-            res.json(result)
-        })
+    router.get('/dictTypes', (req, res, next) => {
+        co(function*() {
+
+            res.json(yield Dict.findAll({
+                where: {hasChild: true},
+                attributes: ['key'],
+                order: ['type'],
+                raw: true
+            }))
+
+        }).catch(next);
     });
 
     router.post('/dict', (req, res, next) => {
@@ -32,7 +36,7 @@ module.exports = router => {
             });
             if (parent && !parent.hasChild) {
                 yield Dict.update({hasChild: true}, {
-                    where: {dictId: parent.dictId}
+                    where: {dictID: parent.dictID}
                 })
             }
 
@@ -46,7 +50,7 @@ module.exports = router => {
         co(function*() {
 
             let result = yield Dict.update(req.body, {
-                where: {dictId: req.body.dictId}
+                where: {dictID: req.body.dictID}
             });
 
             if (req.body.hasChild && req.body.key != req.body.keyBeforeUpdate) {
@@ -64,7 +68,7 @@ module.exports = router => {
         co(function*() {
 
             let result = yield Dict.destroy({
-                where: {dictId: req.body.dictId}
+                where: {dictID: req.body.dictID}
             });
             let siblings = yield Dict.findAll({
                 where: {type: req.body.type},
@@ -76,7 +80,7 @@ module.exports = router => {
                 });
                 if (parent.hasChild) {
                     yield Dict.update({hasChild: false}, {
-                        where: {dictId: parent.dictId}
+                        where: {dictID: parent.dictID}
                     })
                 }
             }

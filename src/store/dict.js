@@ -18,6 +18,13 @@ export default {
     },
 
     actions: {
+        getDicts({commit}, type){
+            return new Promise((resolve) => {
+                API.getDicts(type).then(res => {
+                    resolve(res.body)
+                })
+            })
+        },
         getDictTree({commit}) {
             getChildren(commit, 'Root')
         },
@@ -56,7 +63,7 @@ export default {
 }
 
 function getChildren(commit, type) {
-    API.getDict(type).then(res => {
+    API.getDicts(type).then(res => {
         commit('GET_DICT', res.body);
         res.body.forEach(item => {
             item.keyBeforeUpdate = item.key;

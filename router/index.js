@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 adopt([
     './people',
+    './criteria',
     './dict'
 ]);
 

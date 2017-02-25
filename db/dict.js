@@ -2,10 +2,10 @@ let db = require('./dbClient');
 let {INTEGER, STRING, BOOLEAN} = require('sequelize');
 
 let Dict = db.define('dict', {
-    dictId: {type: INTEGER, primaryKey: true, autoIncrement: true},
+    dictID: {type: INTEGER, primaryKey: true, autoIncrement: true},
     type: {type: STRING(20), allowNull: false, comment: '类型'},
     key: {type: STRING(20), allowNull: false, comment: '键'},
-    value: {type: STRING(50), comment: '值'},
+    value: {type: STRING(100), comment: '值'},
     desc: {type: STRING(50), comment: '描述'},
     hasChild: {type: BOOLEAN, comment: '是否有子节点', defaultValue: false}
 }, {
@@ -16,7 +16,7 @@ let Dict = db.define('dict', {
     indexes: [{fields: ['type']}]
 });
 
-// // //node db/dict
+// //node db/dict
 // Dict.sync().then(() => {
 //     //init data
 //     Dict.create({type: 'Root', key: 'Crawler', desc: '爬虫相关', hasChild: true});
