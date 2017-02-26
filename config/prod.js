@@ -8,7 +8,7 @@ module.exports = {
     APP_DOMAIN: 'www.flashbeep.cn',
     APP_PORT: 80,
 
-    // api port
+    // api
     API_PORT: 3100,
 
     MYSQL: {

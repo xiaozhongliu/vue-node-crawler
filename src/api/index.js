@@ -20,6 +20,10 @@ export default {
         return POST('criteria', criteria)
     },
 
+    crawl(criteria){
+        return POST('crawl', criteria)
+    },
+
     getDicts(type){
         return GET('dict/' + type)
     },

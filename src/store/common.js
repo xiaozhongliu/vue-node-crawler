@@ -1,3 +1,5 @@
+import API from '../api'
+
 export default {
 
     state: {
@@ -13,4 +15,14 @@ export default {
             state.activeMenuIndex = index
         }
     },
+
+    actions: {
+        crawl({commit}, criteria){
+            return new Promise(resolve => {
+                API.crawl({criteria}).then(() => {
+                    resolve()
+                })
+            })
+        }
+    }
 }

@@ -1,13 +1,8 @@
-module.exports = {
-    initSocket(server) {
-        let socket = null;
-        require('socket.io')(server).on('connection', instance => {
-            console.log('socket connection established');
-            socket = instance;
-        });
-        this.broadcast = message => {
-            socket && socket.emit('broadcast', message)
+module.exports = server => {
+    require('socket.io')(server).on('connection', instance => {
+        console.log('A socket client connected');
+        global.broadcast = message => {
+            instance.emit('broadcast', message)
         }
-    },
-    broadcast: null
+    })
 };

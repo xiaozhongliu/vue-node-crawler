@@ -8,7 +8,7 @@ const expressValidator = require('express-validator');
 const router = require('./router');
 const {
     httpAuth,
-    httpLog,
+//    httpLog,
     cors,
 //    validate,
 } = require('./midware');
@@ -35,7 +35,7 @@ app.use(session({
 }));
 
 app.get(config.HTTP_AUTH.itemsReg, httpAuth);
-app.use(httpLog);
+//app.use(httpLog);
 app.use(cors);
 //app.use(validate.common);
 app.use(router);
@@ -55,5 +55,5 @@ app.use(({code = -1, message, stack}, req, res, next) => {
 });
 
 const server = require('http').createServer(app);
-socket.initSocket(server);
 server.listen(config.API_PORT);
+socket(server);
