@@ -6,7 +6,7 @@ module.exports = router => {
         child.send(req.body.criteria);
         child.on('message', message => {
             global.broadcast(message);
-            message == '爬取结束' && child.kill()
+            message == '处理完成' && child.kill()
         });
         res.json()
     })

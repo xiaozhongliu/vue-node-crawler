@@ -1,4 +1,4 @@
 module.exports = {
-    crawler: require('./crawler'),
+    authorize: require('./authorize'),
     fetch: require('./fetch'),
 };

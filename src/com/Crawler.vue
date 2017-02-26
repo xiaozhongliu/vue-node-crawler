@@ -81,14 +81,6 @@
                 this.crawlDisabled = val == 0
             },
             startCrawl() {
-                if (!this.$options.sockets.broadcast) {
-                    this.$options.sockets.broadcast = message => {
-                        this.message += message + '<br/>';
-                        if (message == '爬取结束') {
-                            this.crawlOngoing = false
-                        }
-                    }
-                }
                 this.crawl(this.selectedCriteria).then(() => {
                     this.crawlOngoing = true
                 })
@@ -96,7 +88,11 @@
         },
         beforeMount(){
             this.$store.commit('ACTIVATE_MENU', '3');
-            this.getCriteria(this)
+            this.getCriteria(this);
+            this.$options.sockets.broadcast = message => {
+                this.message += message + '<br/>';
+                this.crawlOngoing = message != '处理完成'
+            }
         }
     }
 </script>
@@ -108,16 +104,14 @@
         }
         .socket {
             position: relative;
-            height: 500px;
+            min-height: 500px;
             border: 20px solid #555;
             border-radius: 5px;
-            overflow-y: scroll;
             background: #555;
             font-family: "Droid Sans Mono", "Courier New", monospace;
             color: #bbb;
 
             .message {
-                position: absolute;
                 bottom: 0;
                 min-height: 460px
             }

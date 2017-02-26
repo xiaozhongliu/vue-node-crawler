@@ -77,6 +77,7 @@
             <el-table-column prop="strength" label="Strength" min-width="140"></el-table-column>
             <el-table-column prop="comment" label="Comment" min-width="140"></el-table-column>
             <el-table-column prop="notes" label="Notes" min-width="140"></el-table-column>
+            <el-table-column prop="keyword" label="Keyword" width="100"></el-table-column>
             <el-table-column label="操作" width="70" fixed="right" class-name="action">
                 <template scope="props">
                     <el-button type="primary" size="small" icon="edit"></el-button>
