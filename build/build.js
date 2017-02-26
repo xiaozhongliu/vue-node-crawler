@@ -8,11 +8,11 @@ const ora = require('ora');
 const webpack = require('webpack');
 const webpackConfig = require('./webpack.prod.conf');
 
-console.log(
-    '  Tip:\n' +
-    '  Built files are meant to be served over an HTTP server.\n' +
-    '  Opening index.html over file:// won\'t work.\n'
-);
+// console.log(
+//     '  Tip:\n' +
+//     '  Built files are meant to be served over an HTTP server.\n' +
+//     '  Opening index.html over file:// won\'t work.\n'
+// );
 
 let spinner = ora('building for production...');
 spinner.start();
@@ -20,7 +20,7 @@ spinner.start();
 let assetsPath = path.join(config.build.assetsRoot, config.build.assetsSubDirectory);
 rm('-rf', assetsPath);
 mkdir('-p', assetsPath);
-cp('-R', 'static/*', assetsPath);
+// cp('-R', 'static/*', assetsPath);
 
 webpack(webpackConfig, function (err, stats) {
     spinner.stop();

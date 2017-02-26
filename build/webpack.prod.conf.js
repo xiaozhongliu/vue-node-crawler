@@ -31,11 +31,9 @@ let webpackConfig = merge(baseWebpackConfig, {
         new webpack.DefinePlugin({
             'process.env': env
         }),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            }
-        }),
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {warnings: false}
+        // }),
         new webpack.optimize.OccurrenceOrderPlugin(),
         // extract css into its own file
         new ExtractTextPlugin(utils.assetsPath('css/[name].[contenthash].css')),
@@ -43,9 +41,7 @@ let webpackConfig = merge(baseWebpackConfig, {
         // you can customize output by editing /index.html
         // see https://github.com/ampedandwired/html-webpack-plugin
         new HtmlWebpackPlugin({
-            filename: process.env.NODE_ENV === 'testing'
-                ? 'index.html'
-                : config.build.index,
+            filename: 'index.html',
             template: 'src/index.html',
             inject: true,
             minify: {
