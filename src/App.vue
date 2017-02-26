@@ -8,13 +8,16 @@
                 <router-link to="/criteria">条件录入</router-link>
             </el-menu-item>
             <el-menu-item index="3">
+                <router-link to="/crawler">数据爬取</router-link>
+            </el-menu-item>
+            <el-menu-item index="4">
                 <router-link to="/dict">字典管理</router-link>
             </el-menu-item>
-            <el-submenu index="4">
+            <el-submenu index="5">
                 <template slot="title">其他页面</template>
-                <el-menu-item index="4-1">选项1</el-menu-item>
-                <el-menu-item index="4-2">选项2</el-menu-item>
-                <el-menu-item index="4-3">选项3</el-menu-item>
+                <el-menu-item index="5-1">选项1</el-menu-item>
+                <el-menu-item index="5-2">选项2</el-menu-item>
+                <el-menu-item index="5-3">选项3</el-menu-item>
             </el-submenu>
         </el-menu>
         <div class="main">
@@ -52,6 +55,13 @@
 
     .main {
         margin: 15px
+    }
+
+    .is-leaf {
+        .cell {
+            padding: 0 !important;
+            text-align: center
+        }
     }
 
     .slide-fade-enter-active {

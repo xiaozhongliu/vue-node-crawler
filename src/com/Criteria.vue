@@ -48,9 +48,8 @@
             <el-table-column prop="keyword" label="Keyword" width="100"></el-table-column>
             <el-table-column prop="industry" label="Industry" width="200"></el-table-column>
             <el-table-column prop="location" label="Location" width="200"></el-table-column>
-            <el-table-column prop="url" label="LinkedIn URL" width="600"></el-table-column>
-            <el-table-column prop="executedText" label="Executed" class-name="executed"
-                             min-width="60"></el-table-column>
+            <el-table-column prop="url" label="LinkedIn URL" min-width="600"></el-table-column>
+            <el-table-column prop="executedText" label="Executed" class-name="executed" width="90"></el-table-column>
             <el-table-column label="操作" width="70" fixed="right" class-name="action">
                 <template scope="props">
                     <el-button type="primary" size="small" icon="delete"></el-button>
@@ -179,7 +178,7 @@
             padding: 5px;
             border: 1px solid #dfe6ec
         }
-        span.title {
+        .title {
             display: inline-block;
             width: 70px;
             text-shadow: 0 0 0.1px blue
@@ -190,6 +189,11 @@
         }
         .gen-btn {
             margin: 0 0 10px calc(45% - 35px)
+        }
+        .el-table {
+            .cell {
+                padding: 5px 6px
+            }
         }
         .executed {
             text-shadow: 0 0 0.1px yellow

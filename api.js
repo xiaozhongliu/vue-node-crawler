@@ -14,6 +14,7 @@ const {
 } = require('./midware');
 const {
     customValidators,
+    socket,
 } = require('./util');
 const config = require('./config')();
 
@@ -53,4 +54,6 @@ app.use(({code = -1, message, stack}, req, res, next) => {
     messageCodes.includes(code) || console.log(stack);
 });
 
-app.listen(config.API_PORT);
+const server = require('http').createServer(app);
+socket.initSocket(server);
+server.listen(config.API_PORT);

@@ -180,12 +180,6 @@
                 padding-left: 19px
             }
         }
-        .is-leaf {
-            .cell {
-                padding: 0;
-                text-align: center
-            }
-        }
 
         .search {
             z-index: 100;

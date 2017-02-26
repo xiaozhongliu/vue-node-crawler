@@ -1,11 +1,12 @@
 <template>
     <div class="dict-page">
-        <el-tree :data="tree.data" node-key="dictId" :default-expanded-keys="[tree.expandedKey]" :props="tree.props"
+        <el-tree :data="tree.data" node-key="dictID" :default-expanded-keys="[tree.expandedKey]" :props="tree.props"
                  @node-click="nodeClick"></el-tree>
 
         <transition name="fade" mode="in-out">
             <div class="add">
-                <el-button class="add-btn" type="primary" size="small" icon="plus" v-if="!isAdding" @click="showAdd"></el-button>
+                <el-button class="add-btn" type="primary" size="small" icon="plus" v-if="!isAdding"
+                           @click="showAdd"></el-button>
                 <el-table class="edit-table" :data="addDict" :show-header="false" v-else stripe border>
                     <el-table-column label="操作" width="60" class-name="action">
                         <template scope="props">
@@ -27,12 +28,12 @@
                             <el-input v-model="props.row.key" placeholder="请输入内容"></el-input>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="value" label="Value" width="500">
+                    <el-table-column prop="value" label="Value" min-width="600">
                         <template scope="props">
                             <el-input v-model="props.row.value" placeholder="请输入内容"></el-input>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="desc" label="Desc" min-width="240">
+                    <el-table-column prop="desc" label="Desc" width="310">
                         <template scope="props">
                             <el-input v-model="props.row.desc" placeholder="请输入内容"></el-input>
                         </template>
@@ -41,7 +42,7 @@
             </div>
         </transition>
 
-        <el-table :data="table.data" row-key="dictId" :expand-row-keys="[table.expandedKey]" @expand="rowExpand" stripe
+        <el-table :data="table.data" row-key="dictID" :expand-row-keys="[table.expandedKey]" @expand="rowExpand" stripe
                   border>
             <el-table-column type="expand" width="60">
                 <template scope="props">
@@ -68,12 +69,12 @@
                                 <el-input v-model="props.row.key" placeholder="请输入内容"></el-input>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="value" label="Value" width="600">
+                        <el-table-column prop="value" label="Value" min-width="600">
                             <template scope="props">
                                 <el-input v-model="props.row.value" placeholder="请输入内容"></el-input>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="desc" label="Desc" min-width="240" class-name="edit-desc">
+                        <el-table-column prop="desc" label="Desc" width="310" class-name="edit-desc">
                             <template scope="props">
                                 <el-input v-model="props.row.desc" placeholder="请输入内容"></el-input>
                             </template>
@@ -83,8 +84,8 @@
             </el-table-column>
             <el-table-column prop="type" label="Type" width="120"></el-table-column>
             <el-table-column prop="key" label="Key" width="200"></el-table-column>
-            <el-table-column prop="value" label="Value" width="600"></el-table-column>
-            <el-table-column prop="desc" label="Desc" min-width="240"></el-table-column>
+            <el-table-column prop="value" label="Value" min-width="600"></el-table-column>
+            <el-table-column prop="desc" label="Desc" width="240"></el-table-column>
             <el-table-column label="操作" width="70" fixed="right" class-name="action">
                 <template scope="props">
                     <el-tooltip class="item" effect="dark" content="仅可删除末尾节点" placement="top-end">
@@ -135,6 +136,7 @@
             nodeClick(data, node, tree){
                 this.tree.expandedKey = data.dictID;
                 this.tree.selectedType = data.type;
+                this.isAdding = false;
                 if (data.hasChild) {
                     this.table.data = data.children
                 }
@@ -186,7 +188,7 @@
             }
         },
         beforeMount(){
-            this.$store.commit('ACTIVATE_MENU', '3');
+            this.$store.commit('ACTIVATE_MENU', '4');
             this.getDictTree();
             delayedRefresh(this)
         }
@@ -212,9 +214,9 @@
         .el-table__expanded-cell {
             padding: 0
         }
-        .is-leaf {
+        .el-table {
             .cell {
-                text-align: center
+                padding: 5px 6px
             }
         }
         .edit-table {

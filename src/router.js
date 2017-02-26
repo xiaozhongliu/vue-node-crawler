@@ -14,6 +14,10 @@ export default new VueRouter({
             component: resolve => require(['./com/Criteria.vue'], resolve)
         },
         {
+            path: '/crawler',
+            component: resolve => require(['./com/Crawler.vue'], resolve)
+        },
+        {
             path: '/dict',
             component: resolve => require(['./com/Dict.vue'], resolve)
         },

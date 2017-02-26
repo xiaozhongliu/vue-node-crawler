@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
+import VueSocketio from 'vue-socket.io';
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import VueLazyload from 'vue-lazyload'
@@ -8,6 +9,7 @@ import store from './store'
 import './config'
 import '../db/enum'
 
+Vue.use(VueSocketio, config.API_HOST)
 Vue.use(ElementUI)
 Vue.use(VueLazyload, {
     preLoad: 1.3,
