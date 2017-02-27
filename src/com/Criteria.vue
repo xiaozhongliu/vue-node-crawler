@@ -130,20 +130,19 @@
                 this.locationCheckAll = checkedCount === this.locations.length;
                 this.isLocationIndeterminate = checkedCount > 0 && checkedCount < this.locations.length
             },
-            generate(){
+            async generate(){
                 if (!this.checkedKeywords.length || !this.checkedIndustries.length || !this.checkedLocations.length) {
                     return this.$message({message: '每种条件请至少选择一个', type: 'warning'})
                 }
 
-                this.bulkCreateCriteria({
+                let result = await this.bulkCreateCriteria({
                     keywords: this.checkedKeywords,
                     industries: this.checkedIndustries,
                     locations: this.checkedLocations
-                }).then(result => {
-                    let message = `生成了${result.inserted}条记录`;
-                    if (result.existed) message += `,其他${result.existed}条已经存在`;
-                    return this.$message({message, type: 'success'})
-                })
+                });
+                let message = `生成了${result.inserted}条记录`;
+                if (result.existed) message += `,其他${result.existed}条已经存在`;
+                return this.$message({message, type: 'success'})
             },
             sizeChange(val) {
                 this.limit = val;

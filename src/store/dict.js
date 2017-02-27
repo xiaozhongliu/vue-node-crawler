@@ -18,60 +18,40 @@ export default {
     },
 
     actions: {
-        getDicts({commit}, type){
-            return new Promise((resolve) => {
-                API.getDicts(type).then(res => {
-                    resolve(res.body)
-                })
-            })
+        async getDicts({}, type){
+            return (await API.getDicts(type)).body
         },
         getDictTree({commit}) {
             getChildren(commit, 'Root')
         },
-        getDictTypes(){
-            return new Promise((resolve) => {
-                API.getDictTypes().then(res => {
-                    resolve(res.body)
-                })
-            })
+        async getDictTypes(){
+            return (await API.getDictTypes()).body
         },
-        createDict({commit}, dict){
-            return new Promise((resolve) => {
-                API.createDict(dict).then(() => {
-                    getChildren(commit, 'Root');
-                    resolve()
-                })
-            })
+        async createDict({commit}, dict){
+            let res = await API.createDict(dict);
+            getChildren(commit, 'Root');
+            return res.body
         },
-        updateDict({commit}, dict){
-            return new Promise((resolve) => {
-                API.updateDict(dict).then(() => {
-                    getChildren(commit, 'Root');
-                    resolve()
-                })
-            })
+        async updateDict({commit}, dict){
+            await API.updateDict(dict);
+            getChildren(commit, 'Root')
         },
-        deleteDict({commit}, dict){
-            return new Promise((resolve) => {
-                API.deleteDict(dict).then(() => {
-                    getChildren(commit, 'Root');
-                    resolve()
-                })
-            })
+        async deleteDict({commit}, dict){
+            await API.deleteDict(dict);
+            getChildren(commit, 'Root')
         }
     }
 }
 
-function getChildren(commit, type) {
-    API.getDicts(type).then(res => {
-        commit('GET_DICT', res.body);
-        res.body.forEach(item => {
-            item.keyBeforeUpdate = item.key;
-            item.displayName = `${item.key} ${item.desc || ''}`;
-            if (item.hasChild) {
-                getChildren(commit, item.key)
-            }
-        })
+async function getChildren(commit, type) {
+    let res = await API.getDicts(type);
+    commit('GET_DICT', res.body);
+    res.body.forEach(item => {
+        item.keyBeforeUpdate = item.key;
+        item.displayName = `${item.key} ${item.desc || ''}`;
+        if (item.hasChild) {
+            getChildren(commit, item.key)
+        }
     })
 }
 

@@ -133,7 +133,7 @@
                 'updateDict',
                 'deleteDict'
             ]),
-            nodeClick(data, node, tree){
+            nodeClick(data){
                 this.tree.expandedKey = data.dictID;
                 this.tree.selectedType = data.type;
                 this.isAdding = false;
@@ -152,35 +152,32 @@
             querySearch(query, cb){
                 cb(this.dictTypes)
             },
-            create(dict){
-                this.createDict(dict).then(() => {
-                    this.$message({message: '数据创建成功', type: 'success'});
-                    if (this.table.data[0].type == dict.type) {
-                        this.table.data.push(dict)
-                    }
-                    this.isAdding = false;
-                    this.addDict = [{type: null}];
-                    delayedRefresh(this)
-                })
+            async create(dict){
+                let newDict = await this.createDict(dict);
+                this.$message({message: '数据创建成功', type: 'success'});
+                if (this.table.data[0].type == dict.type) {
+                    this.table.data.push(newDict)
+                }
+                this.isAdding = false;
+                this.addDict = [{type: null}];
+                delayedRefresh(this)
             },
-            update(dict){
-                this.updateDict(dict).then(() => {
-                    this.$message({message: '数据更新成功', type: 'success'});
-                    delayedRefresh(this)
-                })
+            async update(dict){
+                await this.updateDict(dict);
+                this.$message({message: '数据更新成功', type: 'success'});
+                delayedRefresh(this)
             },
             deleteIt(dict){
                 this.$confirm('确定删除这条记录?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
-                }).then(() => {
-                    this.deleteDict(dict).then(() => {
-                        this.$message({message: '删除成功', type: 'success'});
-                        this.table.data = this.table.data.filter(item => {
-                            return item.dictID != dict.dictID
-                        });
-                        delayedRefresh(this)
+                }).then(async() => {
+                    await this.deleteDict(dict);
+                    this.$message({message: '删除成功', type: 'success'});
+                    delayedRefresh(this);
+                    this.table.data = this.table.data.filter(item => {
+                        return item.dictID != dict.dictID
                     })
                 }).catch(() => {
                     this.$message({type: 'info', message: '已取消'})

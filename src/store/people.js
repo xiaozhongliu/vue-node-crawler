@@ -17,17 +17,16 @@ export default {
     },
 
     actions: {
-        getPeople({commit}, {
+        async getPeople({commit}, {
             page = 1,
             limit = config.PAGE_SIZE,
             criteria = {}
         }) {
-            API.getPeople(Object.assign({
-                page,
-                limit
-            }, criteria)).then(res => {
-                commit('GET_PEOPLE', res.body)
-            })
+            let res = await API.getPeople(Object.assign(
+                {page, limit},
+                criteria
+            ));
+            commit('GET_PEOPLE', res.body)
         }
     }
 }

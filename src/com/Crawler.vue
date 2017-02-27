@@ -80,10 +80,9 @@
                 this.selectedCriteria = val;
                 this.crawlDisabled = val == 0
             },
-            startCrawl() {
-                this.crawl(this.selectedCriteria).then(() => {
-                    this.crawlOngoing = true
-                })
+            async startCrawl() {
+                await this.crawl(this.selectedCriteria);
+                this.crawlOngoing = true
             }
         },
         beforeMount(){
@@ -114,6 +113,10 @@
             .message {
                 bottom: 0;
                 min-height: 460px
+            }
+
+            .data {
+                color: yellow
             }
         }
     }

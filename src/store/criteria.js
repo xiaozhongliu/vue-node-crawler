@@ -17,22 +17,18 @@ export default {
     },
 
     actions: {
-        getCriteria({commit}, {
+        async getCriteria({commit}, {
             page = 1,
             limit = config.PAGE_SIZE
         }) {
-            return new Promise((resolve) => {
-                API.getCriteria({page, limit}).then(res => {
-                    res.body.rows.forEach(item => {
-                        item.executedText = item.executed ? '已经执行录入' : ''
-                    });
-                    commit('GET_CRITERIA', res.body);
-                    resolve()
-                })
-            })
+            let res = await API.getCriteria({page, limit});
+            res.body.rows.forEach(item => {
+                item.executedText = item.executed ? '已经执行录入' : ''
+            });
+            commit('GET_CRITERIA', res.body)
         },
 
-        bulkCreateCriteria({commit}, {
+        async bulkCreateCriteria({commit}, {
             keywords,
             industries,
             locations
@@ -51,20 +47,14 @@ export default {
                     })
                 })
             });
-            return new Promise((resolve) => {
-                API.bulkCreateCriteria({criteria}).then((result) => {
-                    API.getCriteria({
-                        page: 1,
-                        limit: config.PAGE_SIZE
-                    }).then(res => {
-                        res.body.rows.forEach(item => {
-                            item.executedText = item.executed ? '已经执行录入' : ''
-                        });
-                        commit('GET_CRITERIA', res.body);
-                        resolve(result.body)
-                    })
-                })
-            })
+
+            let result = await API.bulkCreateCriteria({criteria});
+            let res = await  API.getCriteria({page: 1, limit: config.PAGE_SIZE});
+            res.body.rows.forEach(item => {
+                item.executedText = item.executed ? '已经执行录入' : ''
+            });
+            commit('GET_CRITERIA', res.body);
+            return result.body
         }
     }
 }

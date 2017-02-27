@@ -17,12 +17,8 @@ export default {
     },
 
     actions: {
-        crawl({commit}, criteria){
-            return new Promise(resolve => {
-                API.crawl({criteria}).then(() => {
-                    resolve()
-                })
-            })
+        async crawl({}, criteria) {
+            return await API.crawl({criteria})
         }
     }
 }

@@ -18,7 +18,6 @@ module.exports = function*(keyword, industry, location, url, report) {
     function* crawl() {
         return new Promise(resolve => {
 
-            let files = [];
             let index = 1;
             let maxPage = 1;
             let pageSize = 20;
@@ -28,7 +27,7 @@ module.exports = function*(keyword, industry, location, url, report) {
 
                 pageCountGot || report('正在计算数据总数...');
                 if (index > maxPage) {
-                    return resolve({maxPage, files})
+                    return resolve(maxPage)
                 }
 
                 fetch(`${url}&page=${index}`, $ => {
@@ -39,7 +38,8 @@ module.exports = function*(keyword, industry, location, url, report) {
                             criteria = JSON.parse($('code')[12].children[0].data).included.find(item => item.type == 'PRIMARY');
                         } catch (e) {
                             report(`错误:${e.message},重新开始...`);
-                            index = 1
+                            index = 1;
+                            return setTimeout(heartbeat, 2000)
                         }
                         let totalPage = Math.ceil(criteria.total / pageSize);
                         pageCountGot = true;
@@ -51,10 +51,8 @@ module.exports = function*(keyword, industry, location, url, report) {
                     }
 
                     try {
-                        let fileName = `page${index}_${new Date().getTime()}`;
-                        fs.writeFile(`./crawler/data/${fileName}.json`, $('code')[12].children[0].data);
+                        fs.writeFile(`./crawler/data/page${index}.json`, $('code')[12].children[0].data);
                         report(`第${index}页爬取完毕`);
-                        files.push(fileName);
                         ++index
                     } catch (e) {
                         report(`错误:${e.message},重新开始...`);
@@ -72,12 +70,14 @@ module.exports = function*(keyword, industry, location, url, report) {
     /**
      * process fetched data
      */
-    function* process({maxPage, files}) {
+    function* process(maxPage) {
 
         //循环全部使用for以使所有SQL执行同步化避免重复插入数据
         for (let i = 1; i <= maxPage; i++) {
 
-            let raw = require(`./data/${files[i - 1]}.json`);
+            let currentFile = `./data/page${i}.json`;
+            delete require.cache[require.resolve(currentFile)];
+            let raw = require(currentFile);
             let arr = raw.included.filter(item => item.$type == 'com.linkedin.voyager.identity.shared.MiniProfile');
 
             for (let j = 0; j < arr.length; j++) {
@@ -93,7 +93,11 @@ module.exports = function*(keyword, industry, location, url, report) {
 
                 let people = yield People.findOne({where: {linkedInID: publicIdentifier}});
                 if (people) {
-                    report(`数据已经存在: ${JSON.stringify(arr[j])}`);
+                    report(`数据已经存在: <span class=data>${JSON.stringify({
+                        firstName,
+                        lastName,
+                        occupation
+                    })}</span>`);
                     continue
                 }
 
@@ -147,9 +151,15 @@ module.exports = function*(keyword, industry, location, url, report) {
                     company,
                     location
                 };
-                report(
-                    `插入数据: ${JSON.stringify(newPeople)}`
-                );
+                report(`插入数据: <span class=data>${JSON.stringify({
+                    cname,
+                    ename,
+                    keyword,
+                    industry,
+                    title,
+                    company,
+                    location
+                })}</span>`);
                 yield People.create(newPeople)
             }
         }
