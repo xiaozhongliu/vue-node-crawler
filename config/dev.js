@@ -12,7 +12,7 @@ module.exports = {
     API_PORT: 3100,
 
     MYSQL: {
-        host: 'localhost',
+        host: '118.178.186.122',
         name: 'linkedin',
         user,
         pwd,

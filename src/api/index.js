@@ -20,6 +20,10 @@ export default {
         return POST('criteria', criteria)
     },
 
+    getLocationList(){
+        return GET('locations')
+    },
+
     crawl(criteria){
         return POST('crawl', criteria)
     },

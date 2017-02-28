@@ -17,13 +17,14 @@ let Dict = db.define('dict', {
 });
 
 // //node db/dict
-// Dict.sync().then(() => {
-//     //init data
-//     Dict.create({type: 'Root', key: 'Crawler', desc: '爬虫相关', hasChild: true});
-//     Dict.create({type: 'Crawler', key: 'Criteria', desc: '筛选条件', hasChild: true});
-//     Dict.create({type: 'Criteria', key: 'Location', desc:'所在地区', hasChild: false});
-//     Dict.create({type: 'Criteria', key: 'Industry', desc:'行业领域', hasChild: false});
-//     Dict.create({type: 'Criteria', key: 'Keyword',desc:'关键词', hasChild: false});
-// });
+// Dict.sync()
+//     .then(() => {
+//         //init data
+//         Dict.create({type: 'Root', key: 'Crawler', desc: '爬虫相关', hasChild: true});
+//         Dict.create({type: 'Crawler', key: 'Criteria', desc: '筛选条件', hasChild: true});
+//         Dict.create({type: 'Criteria', key: 'Location', desc: '所在地区', hasChild: false});
+//         Dict.create({type: 'Criteria', key: 'Industry', desc: '行业领域', hasChild: false});
+//         Dict.create({type: 'Criteria', key: 'Keyword', desc: '关键词', hasChild: false});
+//     });
 
 module.exports = Dict;

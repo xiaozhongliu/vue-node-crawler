@@ -18,14 +18,21 @@
                             <el-autocomplete
                                     class="inline-input"
                                     v-model="props.row.type"
-                                    :fetch-suggestions="querySearch"
+                                    :fetch-suggestions="querySearchTypes"
                                     placeholder="请输入">
                             </el-autocomplete>
                         </template>
                     </el-table-column>
                     <el-table-column prop="key" label="Key" width="200">
                         <template scope="props">
-                            <el-input v-model="props.row.key" placeholder="请输入内容"></el-input>
+                            <el-autocomplete
+                                    class="location-input"
+                                    v-if="props.row.type=='Location'"
+                                    v-model="props.row.key"
+                                    :fetch-suggestions="querySearchLocations"
+                                    placeholder="请输入内容">
+                            </el-autocomplete>
+                            <el-input v-else v-model="props.row.key" placeholder="请输入内容"></el-input>
                         </template>
                     </el-table-column>
                     <el-table-column prop="value" label="Value" min-width="600">
@@ -66,7 +73,14 @@
                         </el-table-column>
                         <el-table-column prop="key" label="Key" width="200">
                             <template scope="props">
-                                <el-input v-model="props.row.key" placeholder="请输入内容"></el-input>
+                                <el-autocomplete
+                                        class="location-input"
+                                        v-if="props.row.type=='Location'"
+                                        v-model="props.row.key"
+                                        :fetch-suggestions="querySearchLocations"
+                                        placeholder="请输入内容">
+                                </el-autocomplete>
+                                <el-input v-else v-model="props.row.key" placeholder="请输入内容"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column prop="value" label="Value" min-width="600">
@@ -105,8 +119,9 @@
         data(){
             return {
                 dictTypes: [],
+                locationList: [],
                 isAdding: false,
-                addDict: [{type: null}],
+                addDict: [{type: null, key: null}],
                 tree: {
                     data: null,
                     expandedKey: 0,
@@ -123,12 +138,10 @@
             'dict'
         ]),
         methods: {
-            ...mapMutations([
-                'ACTIVATE_MENU'
-            ]),
             ...mapActions([
                 'getDictTree',
                 'getDictTypes',
+                'getLocationList',
                 'createDict',
                 'updateDict',
                 'deleteDict'
@@ -149,20 +162,28 @@
                 this.table.expandedKey = 0;
                 this.isAdding = true
             },
-            querySearch(query, cb){
+            querySearchTypes(query, cb){
                 cb(this.dictTypes)
             },
+            querySearchLocations(query, cb){
+                if (!query) {
+                    return cb(this.locationList)
+                }
+                cb(this.locationList.filter(item => item.value.includes(query)))
+            },
             async create(dict){
+                if (!validate(dict, this)) return;
                 let newDict = await this.createDict(dict);
                 this.$message({message: '数据创建成功', type: 'success'});
                 if (this.table.data[0].type == dict.type) {
                     this.table.data.push(newDict)
                 }
                 this.isAdding = false;
-                this.addDict = [{type: null}];
+                this.addDict = [{type: null, key: null}];
                 delayedRefresh(this)
             },
             async update(dict){
+                if (!validate(dict, this)) return;
                 await this.updateDict(dict);
                 this.$message({message: '数据更新成功', type: 'success'});
                 delayedRefresh(this)
@@ -199,10 +220,35 @@
                 context.dictTypes.push({value: type.key})
             })
         });
+        context.getLocationList().then(locations => {
+            context.locationList = locations.map(item => ({value: item}));
+        });
         setTimeout(() => {
             context.tree.data = context.dict.children;
             if (!context.table.data) context.table.data = context.tree.data
         }, 500)
+    }
+
+    function validate(dict, context) {
+        for (let field of ['type', 'key']) {
+            if (!dict[field]) {
+                context.$message({message: field + '不能为空', type: 'warning'});
+                return false
+            }
+        }
+        if (['Industry', 'Location'].includes(dict.type)) {
+            if (!dict.value) {
+                context.$message({message: 'value不能为空', type: 'warning'});
+                return false
+            }
+            if (dict.type == 'Location' && context.locationList.some(item => item.value == dict.key)) {
+                dict.key = dict.key.slice(0, dict.key.indexOf(','))
+            } else {
+                context.$message({message: 'Location必须从下拉列表中选择', type: 'warning'});
+                return false
+            }
+        }
+        return true
     }
 </script>
 
@@ -236,6 +282,9 @@
                 margin: 10px 13px;
                 width: 35px
             }
+        }
+        .location-input {
+            width: 100%
         }
     }
 </style>

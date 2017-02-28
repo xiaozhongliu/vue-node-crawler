@@ -17,6 +17,9 @@ export default {
     },
 
     actions: {
+        async getLocationList(){
+            return (await API.getLocationList()).body
+        },
         async crawl({}, criteria) {
             return await API.crawl({criteria})
         }

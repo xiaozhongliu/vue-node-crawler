@@ -60,9 +60,6 @@
             'criteria'
         ]),
         methods: {
-            ...mapMutations([
-                'ACTIVATE_MENU'
-            ]),
             ...mapActions([
                 'getCriteria',
                 'crawl'

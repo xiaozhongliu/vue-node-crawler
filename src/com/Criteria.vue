@@ -95,9 +95,6 @@
             'criteria'
         ]),
         methods: {
-            ...mapMutations([
-                'ACTIVATE_MENU'
-            ]),
             ...mapActions([
                 'getDicts',
                 'getCriteria',
